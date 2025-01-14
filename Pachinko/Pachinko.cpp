@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
+#include <random>
 #include <cmath>
 #include <list>
 #include "Ball.h"
@@ -70,34 +71,160 @@ bool collisionTest(Block& block, Ball& ball)
 	return true;
 }
 
+void resetGame(int& spawnPoints, int& pointPoints, list<Ball>& balls, vector<Block>& blocks, const int blocksX, const int blocksY, const int blockWithd, const int blockHeight, int level)
+{
+	spawnPoints = 1;
+	pointPoints = 0;
+	balls.clear();
+	blocks.clear();
+	int mid = blocksY / 2;
+
+	switch (level)
+	{
+	case 0:
+		for (int i = 0; i < blocksY; i++)
+		{
+			for (int j = 0; j < blocksX; j++)
+			{
+				blocks.emplace_back((j + 1) * (blockWithd + 10), (i + 1) * (blockHeight + 10), blockWithd, blockHeight, Color::Cyan);
+			}
+		}
+		break;
+	case 1:
+		for (int i = 0; i < blocksY; i++)
+		{
+			for (int j = 0; j <= i; j++)
+			{
+				blocks.emplace_back((j + 1) * (blockWithd + 10), (i + 1) * (blockHeight + 10), blockWithd, blockHeight, Color::Cyan);
+			}
+		}
+		break;
+	case 2:
+		for (int i = 0; i < blocksY; i++)
+		{
+			for (int j = 0; j < blocksX - i; j++)
+			{
+				blocks.emplace_back((j + 1) * (blockWithd + 10), (i + 1) * (blockHeight + 10), blockWithd, blockHeight, Color::Cyan);
+			}
+		}
+		break;
+	case 3:
+		for (int i = 0; i < blocksY; i++)
+		{
+			int start = abs(mid - i);
+			int end = blocksX - start;
+			for (int j = start; j < end; j++)
+			{
+				blocks.emplace_back((j + 1) * (blockWithd + 10), (i + 1) * (blockHeight + 10), blockWithd, blockHeight, Color::Cyan);
+			}
+		}
+		break;
+	case 4:
+		int centerX = 800 / 2;
+		int centerY = 600 / 4;
+		int radius = 100;
+
+		for (int i = 0; i < blocksY; i++)
+		{
+			for (int j = 0; j < blocksX; j++)
+			{
+				float x = (j + 1) * (blockWithd + 10);
+				float y = (i + 1) * (blockHeight + 10);
+				if (sqrt(pow(x - centerX, 2) + pow(y - centerY, 2)) < radius)
+				{
+					blocks.emplace_back(x, y, blockWithd, blockHeight, Color::Cyan);
+				}
+			}
+		}
+		break;
+	}
+}
+
+int chooseLevel()
+{
+	int level = rand() % 5;
+	cout << "Level: " << level << endl;
+	return level;
+}
+
 int main()
 {
 	const int window_width = 800;
 	const int window_height = 600;
-
-	vector<float> x;
-	vector<float> y;
-	vector<float> vx;
-	vector<float> vy;
+	int level = chooseLevel();
+	bool screen = false;
 	int spawnPoints = 1;
 	int pointPoints = 0;
 	Spawn spawn(window_width / 2, 550);
 	list<Ball> balls;
 
-	RenderWindow window{ VideoMode{window_width, window_height}, "PAAAAAAAA-CHIN-KO" };
+	RenderWindow window{ VideoMode{window_width, window_height}, "Arcan oid" };
 	window.setFramerateLimit(60);
 
 	Event event;
-	unsigned blocksX = 10, blocksY = 4, blockWithd = 60, blockHeight = 20;
+	unsigned blocksX = 10, blocksY = 10, blockWithd = 60, blockHeight = 20;
+	int mid = blocksY / 2;
 
 	vector<Block> blocks;
 
-	for (int i = 0; i < blocksY; i++)
+	switch (level)
 	{
-		for (int j = 0; j < blocksX; j++)
+	case 0:
+		for (int i = 0; i < blocksY; i++)
 		{
-			blocks.emplace_back((j + 1) * (blockWithd + 10), (i + 1) * (blockHeight + 10), blockWithd, blockHeight, Color::Cyan);
+			for (int j = 0; j < blocksX; j++)
+			{
+				blocks.emplace_back((j + 1) * (blockWithd + 10), (i + 1) * (blockHeight + 10), blockWithd, blockHeight, Color::Cyan);
+			}
 		}
+		break;
+	case 1:
+		for (int i = 0; i < blocksY; i++)
+		{
+			for (int j = 0; j <= i; j++)
+			{
+				blocks.emplace_back((j + 1) * (blockWithd + 10), (i + 1) * (blockHeight + 10), blockWithd, blockHeight, Color::Cyan);
+			}
+		}
+		break;
+	case 2:
+		for (int i = 0; i < blocksY; i++)
+		{
+			for (int j = 0; j < blocksX - i; j++)
+			{
+				blocks.emplace_back((j + 1) * (blockWithd + 10), (i + 1) * (blockHeight + 10), blockWithd, blockHeight, Color::Cyan);
+			}
+		}
+		break;
+	case 3:
+		for (int i = 0; i < blocksY; i++)
+		{
+			int start = abs(mid - i);
+			int end = blocksX - start;
+			for (int j = start; j < end; j++)
+			{
+				blocks.emplace_back((j + 1) * (blockWithd + 10), (i + 1) * (blockHeight + 10), blockWithd, blockHeight, Color::Cyan);
+			}
+		}
+		break;
+	case 4:
+		int centerX = window_width / 2;
+		int centerY = window_height / 4;
+		int radius = 100;
+
+		for (int i = 0; i < blocksY; i++)
+		{
+			for (int j = 0; j < blocksX; j++)
+			{
+				float x = (j + 1) * (blockWithd + 10);
+				float y = (i + 1) * (blockHeight + 10);
+				if (sqrt(pow(x - centerX, 2) + pow(y - centerY, 2)) < radius)
+				{
+					blocks.emplace_back(x, y, blockWithd, blockHeight, Color::Cyan);
+				}
+			}
+		}
+		break;
 	}
 
 	Font font;
@@ -108,11 +235,14 @@ int main()
 	Text text;
 	Text ballNumber;
 
-	Image image;
-	if (!image.loadFromFile("endScreen.png"))
+	Texture endScreen;
+	if (!endScreen.loadFromFile("C:\\Users\\User\\source\\repos\\Pachinko\\Pachinko\\endScreen.png"))
 	{
-		cout << "Error loading image" << endl;
+		cout << "Skibidi Toilet" << endl;
 	}
+	RectangleShape square(sf::Vector2f(800.f, 600.f));
+	square.setPosition(0, 0);
+	square.setTexture(&endScreen);
 
 	while (true)
 	{
@@ -132,6 +262,13 @@ int main()
 		if (event.type == Event::KeyPressed && event.key.code == Keyboard::P)
 		{
 			spawnPoints++;
+		}
+		if (event.type == Event::KeyPressed && event.key.code == Keyboard::R)
+		{
+			int level = chooseLevel();
+			resetGame(spawnPoints, pointPoints, balls, blocks, blocksX, blocksY, blockWithd, blockHeight, level);
+
+			screen = false;
 		}
 
 		if (event.type == Event::KeyPressed && event.key.code == Keyboard::Space)
@@ -160,9 +297,9 @@ int main()
 			}
 		}
 
-		if (balls.empty())
+		if (balls.empty() && spawnPoints == 0)
 		{
-			//przegrywasz
+			screen = true;
 		}
 
 		Vector2f currentSpawnPosition = spawn.update();
@@ -206,7 +343,9 @@ int main()
 		{
 			window.draw(block);
 		}
-
+		if (screen) {
+			window.draw(square);
+		}
 		window.display();
 	}
 
