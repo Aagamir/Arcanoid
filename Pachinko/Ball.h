@@ -26,9 +26,10 @@ public:
 	float ballCollision();
 
 private:
+
 	CircleShape ball;
 	const float ballRadius{ 10.0f };
-	const float ballTestVelocity{ 3.0f };
+	const float ballTestVelocity{ 5.0f };
 	Vector2f velocity{ ballTestVelocity, ballTestVelocity };
 
 	void draw(RenderTarget& target, RenderStates state) const override;

@@ -1,5 +1,6 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <vector>
 #include <random>
@@ -244,6 +245,14 @@ int main()
 	square.setPosition(0, 0);
 	square.setTexture(&endScreen);
 
+	//Music theme;
+	//if (!theme.openFromFile("theme.wav")) {  // muzyka do gierki
+	//	return -1;
+	//}
+	//theme.setVolume(20);
+	//theme.setLoop(true);
+	//theme.play();
+
 	while (true)
 	{
 		window.clear(Color::Black);
@@ -275,9 +284,14 @@ int main()
 		{
 			if (spawnPoints > 0)
 			{
+				int min = -7;
+				int max = 7;
+				random_device rd;
+				mt19937 gen(rd());
+				uniform_int_distribution<> distrib(min, max);
 				spawnPoints--;
-				float randomXVelocity = -4 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (7 - (-7))));
-				float randomYVelocity = -10 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (0 - (-3))));
+				float randomXVelocity = distrib(gen);
+				float randomYVelocity = -4 + (static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (-3 - (-6)))));
 				Ball ball(spawn.getPosition().x, spawn.getPosition().y, randomXVelocity, randomYVelocity);
 				balls.push_back(ball);
 			}

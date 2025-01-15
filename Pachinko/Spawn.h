@@ -19,7 +19,7 @@ private:
 	RectangleShape shape;
 	const float spawnWidth{ 80.0f };
 	const float spawnHeight{ 20.0f };
-	const float spawnVelocity{ 9.0f };
+	const float spawnVelocity{ 10.0f };
 	Vector2f velocity{ spawnVelocity,0.f };
 	Vector2f velocity2{ spawnVelocity,0.f };
 };
